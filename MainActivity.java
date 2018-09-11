@@ -1,4 +1,4 @@
-package com.cours.liotg.nombresecret;
+package com.example.ryad.nombresecret;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,64 +10,96 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    //initialisation des attributs de la classe à NULL
-    private EditText ed_number1;
-    private EditText ed_number2;
-    private Button bt_addition;
-    private TextView lb_result;
-    private Button bt_clear;
-
-    private int result;
+    private EditText ed_1;
+    private TextView tv1;
+    private Button bt1;
+    private Button bt2;
+    private Button bt3;
+    private Button bt4;
+    private boolean update = false;
+    private boolean clicOperateur = false;
+    private String operateur = "";
+    private double chiffre1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main); // instancie les objets
+        setContentView(R.layout.activity_main);
 
-        // initialisation aux objets de l'écran (après setContentView)
+        tv1 = findViewById(R.id.tv1);
+        bt1 = findViewById(R.id.bt1);
+        bt2 = findViewById(R.id.bt2);
+        bt3 = findViewById(R.id.bt_result);
+        ed_1 = findViewById(R.id.ed_1);
+        bt4 = findViewById(R.id.bt_4);
 
-        ed_number1= (EditText) findViewById(R.id.ed_number1);      // R. = arborescence de res donc des ed_ etc
-        ed_number2= (EditText) findViewById(R.id.ed_number2);
-        bt_addition= (Button) findViewById(R.id.bt_addition);
-        lb_result= (TextView) findViewById(R.id.lb_result);
-        bt_clear= (Button) findViewById(R.id.bt_clear);
 
-        final View.OnClickListener bt_additionListener= new View.OnClickListener() {
-            @Override
+        bt1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               //Log.i("DEBUG","Bouton clické");
-
-                result= Integer.parseInt(String.valueOf(ed_number1.getText())) + Integer.parseInt(String.valueOf(ed_number2.getText()));
-                lb_result.setText(String.valueOf(result));
+                chiffreClick("10");
             }
-        };
+        });
 
-        final View.OnClickListener bt_clearListener= new View.OnClickListener() {
-            @Override
+        bt2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                ed_number1.setText(null);
-                ed_number2.setText(null);
-                lb_result.setText(null);
-
-
-
+                chiffreClick("0");
             }
-        };
-        bt_addition.setOnClickListener(bt_additionListener);
-        bt_clear.setOnClickListener(bt_clearListener);
+        });
 
+        bt3.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                divClick();
+            }
+        });
 
-
-        init();
-
-
+        bt4.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                egalClick();
+            }
+        });
 
 
 
 
     }
-    private void init() {
 
+    public void chiffreClick(String str) {
+        if (update) {
+            update = false;
+        } else {
+            if (!ed_1.getText().equals("0"))
+                str = ed_1.getText() + str;
+        }
+        ed_1.setText(str);
+    }
+
+    public void divClick() {
+        if (clicOperateur) {
+            calcul();
+            ed_1.setText(String.valueOf(bt1));
+        } else {
+            chiffre1 = Double.valueOf(ed_1.getText().toString()).doubleValue();
+            clicOperateur = true;
+        }
+        operateur = "/";
+        update = true;
+    }
+
+    private void calcul() {
+        if (operateur.equals("/")) {
+            try {
+                chiffre1 = chiffre1 / Double.valueOf(ed_1.getText().toString()).doubleValue();
+                ed_1.setText(String.valueOf(chiffre1));
+            } catch (ArithmeticException e) {
+                ed_1.setText("0");
+            }
+        }
+    }
+    public void egalClick(){
+        calcul();
+        update = true;
+        clicOperateur = false;
     }
 }
+
+
